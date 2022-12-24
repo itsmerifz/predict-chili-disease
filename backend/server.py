@@ -1,15 +1,29 @@
 import numpy as np
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, json, Response
+from werkzeug.exceptions import HTTPException
 import tensorflow as tf
 import cv2
+import base64
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 IMG_SIZE = 180
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+def convertImage(base64_str, filepath):
+  with open(filepath, "wb") as fh:
+    fh.write(base64.decodebytes(base64_str.encode()))
 
 
 @app.route('/predict', methods=['POST'])
+@cross_origin()
 def predict():
-  image = request.files['image'].read()
+  sended_img = request.form['gambar']
+  filepath = 'backend\output\image.jpg'
+  convertImage(sended_img, filepath)
+  
+  image = open(filepath, "rb").read()
   npimg = np.fromstring(image, np.uint8)
   img_predict = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
   
@@ -28,6 +42,17 @@ def predict():
   json_data = {"status": 200,"message": "Predicted Success", "predicted_class": output_class, "percentage": '{:.2f}'.format(percentage) + '%'}
   return jsonify(json_data)
 
+@app.errorhandler(HTTPException)
+def handle_exception(e):
+  response = e.get_response()
+  response.data = json.dumps({
+    "code": e.code,
+    "name": e.name,
+    "description": e.description,
+  })
+  response.content_type = "application/json"
+  return response
+
 
 if __name__ == '__main__':
-  app.run(debug=False, port=5000, threaded=True)
+  app.run(debug=True, port=5000, threaded=True, ssl_context='adhoc', host='0.0.0.0')
