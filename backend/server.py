@@ -19,7 +19,6 @@ def predict():
   model = tf.keras.models.load_model('backend\model\dataset.h5')
   predicted = model.predict(resized_img)
   number_class = np.argmax(predicted)
-  print(predicted[0][number_class])
   
   classes = ["Healthy", "Leaf Curl", "Leaf Spot", "White Fly", "Yellowish"]
   output_class = classes[np.argmax(predicted)]
