@@ -55,7 +55,7 @@ function App() {
     }).catch((err) => {
       setPredicting(false);
       MySwal.fire({
-        title: <p>{err.response}</p>,
+        title: <p>Gagal Deteksi!</p>,
         icon: "error",
         showConfirmButton: false,
         timer: 3000,
@@ -76,7 +76,7 @@ function App() {
       <div className="prose w-full mx-auto sm:max-w-xl">
         <Nav />
         <div className="p-3 flex items-center justify-center">
-          <div className="w-[328px] h-[558px] bg-[#d9d9d9] rounded-3xl">
+          <div className="w-[328px] h-[590px] bg-[#d9d9d9] rounded-3xl">
             <Webcam
               ref={webcamRef}
               muted={true}

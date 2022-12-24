@@ -29,6 +29,7 @@ def predict():
   resized_img = cv2.resize(img_predict, (IMG_SIZE, IMG_SIZE)) #resizing image
   resized_img = resized_img.reshape(1, IMG_SIZE, IMG_SIZE, 3) #reshaping
   
+  # model = tf.keras.models.load_model('https://firebasestorage.googleapis.com/v0/b/remind-bot-c1839.appspot.com/o/dataset.h5?alt=media&token=5efabd9b-94ff-45b9-8460-7bf4db837cb5')
   model = tf.keras.models.load_model('backend/model/dataset.h5')
   predicted = model.predict(resized_img)
   number_class = np.argmax(predicted)
@@ -54,4 +55,4 @@ def handle_exception(e):
 
 
 if __name__ == '__main__':
-  app.run(debug=True, port=5000, threaded=True, host='0.0.0.0')
+  app.run(debug=False, port=5000, threaded=True, host='0.0.0.0')
