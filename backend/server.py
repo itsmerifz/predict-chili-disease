@@ -15,12 +15,11 @@ def convertImage(base64_str, filepath):
   with open(filepath, "wb") as fh:
     fh.write(base64.decodebytes(base64_str.encode()))
 
-
 @app.route('/predict', methods=['POST'])
 @cross_origin()
 def predict():
-  sended_img = request.form['gambar']
-  filepath = 'backend\output\image.jpg'
+  sended_img = request.json['gambar']
+  filepath = 'backend/output/image.jpg'
   convertImage(sended_img, filepath)
   
   image = open(filepath, "rb").read()
@@ -30,7 +29,7 @@ def predict():
   resized_img = cv2.resize(img_predict, (IMG_SIZE, IMG_SIZE)) #resizing image
   resized_img = resized_img.reshape(1, IMG_SIZE, IMG_SIZE, 3) #reshaping
   
-  model = tf.keras.models.load_model('backend\model\dataset.h5')
+  model = tf.keras.models.load_model('backend/model/dataset.h5')
   predicted = model.predict(resized_img)
   number_class = np.argmax(predicted)
   
@@ -55,4 +54,4 @@ def handle_exception(e):
 
 
 if __name__ == '__main__':
-  app.run(debug=True, port=5000, threaded=True, ssl_context='adhoc', host='0.0.0.0')
+  app.run(debug=True, port=5000, threaded=True, host='0.0.0.0')

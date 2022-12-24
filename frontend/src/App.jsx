@@ -4,9 +4,10 @@ import Webcam from "react-webcam";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.css";
 import axios from "axios";
+import * as https from 'https'
 import withReactContent from "sweetalert2-react-content";
-
 const MySwal = withReactContent(Swal);
+
 
 const Nav = () => {
   return (
@@ -41,11 +42,12 @@ function App() {
 
   const predictImage = async () => {
     setPredicting(true);
-    await axios.post("https://localhost:5000/predict", {gambar: image}).then((res) => {
+    await axios.post("http://192.168.0.103:5000/predict", {gambar: image}).then((res) => {
       setPredicting(false);
       console.log(res.data);
       MySwal.fire({
-        title: <p>{res.data}</p>,
+        title: <p>{res.data.message}</p>,
+        text: `Tanaman cabe kamu ${res.data.predicted_class} sebesar ${res.data.percentage}`,
         icon: "success",
         showConfirmButton: false,
         timer: 3000,
